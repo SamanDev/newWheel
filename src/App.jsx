@@ -17,8 +17,8 @@ if (pathArr.length == 3) {
 //_auth = "farshad-HangOver2";
 //console.log(_auth);
 
-const WEB_URL = process.env.REACT_APP_MODE === "production" ? `wss://${process.env.REACT_APP_DOMAIN_NAME}/` : `ws://${loc.hostname}:8080`;
-
+//const WEB_URL = process.env.REACT_APP_MODE === "production" ? `wss://${process.env.REACT_APP_DOMAIN_NAME}/` : `ws://${loc.hostname}:8080`;
+const WEB_URL = `wss://mwheel.wheelofpersia.com/`;
 // (A) LOCK SCREEN ORIENTATION
 const betAreas = [{ x: 2 }, { x: 4 }, { x: 8 }, { x: 10 }, { x: 20 }, { x: 25 }];
 const getcolor = (item) => {
