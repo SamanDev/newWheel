@@ -367,7 +367,7 @@ userbet.map(function (bet, i) {
         gameData.players.map(function (player, pNumber) {
             if (player.nickname == userData.nickname) {
                 _countBet = _countBet + 1;
-                _totalBet = _totalBet + player.bet;
+                _totalBet = _totalBet + player.amount;
                 _totalWin = _totalWin + player.win;
             }
         });
