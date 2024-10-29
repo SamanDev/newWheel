@@ -150,7 +150,7 @@ window.addEventListener(
 window.parent.postMessage("userget", "*");
 
 if (window.self == window.top) {
-    //window.location.href = "https://www.google.com/";
+    window.location.href = "https://www.google.com/";
 }
 let dealingSound = new Howl({
     src: ["/sounds/dealing_card_fix3.mp3"],
@@ -259,9 +259,9 @@ userbet.map(function (bet, i) {
                 if (data.theClient?.balance >= 0) {
                     setUserData(data.theClient);
                 } else {
-                    setUserData(data.theClient);
-                    // setConn(false);
-                    //_auth = null;
+                    //setUserData(data.theClient);
+                     setConn(false);
+                    _auth = null;
                 }
                 // Update kardan state
             }
@@ -284,7 +284,7 @@ userbet.map(function (bet, i) {
         // Event onclose baraye vaghti ke websocket baste mishe
         socket.onclose = () => {
             console.log("WebSocket closed");
-            // setConn(false);
+             setConn(false);
             _auth = null;
         };
 
