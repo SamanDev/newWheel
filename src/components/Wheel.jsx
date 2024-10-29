@@ -46,7 +46,7 @@ const WheelContect = (prop) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
     const [timer, setTimer] = useState(prop.time);
-    console.log(prop);
+   
     
     useEffect(() => {
         if (!mustSpin && prop.status == "Spin") {
