@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
-const segments = [0, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 25, 2, 4, 2, 8, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 20];
+
+const WheelContect = (prop) => {
+    const segments = [0, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 25, 2, 4, 2, 8, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 20];
 var _l = [];
 const getcolor = (item) => {
     var def = "#000000";
@@ -42,7 +44,6 @@ segments.map((item, i) => {
         },
     });
 });
-const WheelContect = (prop) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
     const [timer, setTimer] = useState(prop.time);

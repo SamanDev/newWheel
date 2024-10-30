@@ -1,26 +1,14 @@
-import React from 'react'
-import {
-  ModalHeader,
-  ModalDescription,
-  ModalContent,
-  ModalActions,
-  Button,
-  Icon,
-  Image,
-  Modal,
-} from 'semantic-ui-react'
+import { Button, Icon } from "semantic-ui-react";
 
-const ModalExampleScrollingContent = (prop) => {
-  const [open, setOpen] = React.useState(false)
+const ModalExampleScrollingContent = () => {
+    return (
+        <span id="leave-button">
+            <Button basic inverted color="grey" size="mini" style={{ position: "relative", marginBottom: 10, textAlign: "left" }} icon labelPosition="left">
+                <Icon name="arrow circle down" />
+                Last 20
+            </Button>
+        </span>
+    );
+};
 
-  return (
-    <span  id="leave-button" >
-   
-                <Button basic inverted  color="grey" size='mini' style={{position:'relative',marginBottom:10,textAlign:'left'}} icon labelPosition='left'>
-                <Icon name='users' />Online <span id="gameId" style={{float:'right'}}>{prop.online}</span></Button>
-   
-    </span>
-  )
-}
-
-export default ModalExampleScrollingContent
+export default ModalExampleScrollingContent;

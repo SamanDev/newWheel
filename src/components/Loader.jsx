@@ -2,7 +2,7 @@ import React from "react";
 import { Dimmer, Loader, Icon, IconGroup, Segment } from "semantic-ui-react";
 
 const LoaderExampleLoader = (prop) => (
-    <Segment basic className="myloading">
+    <div  className="myloading">
         <Dimmer active>
             {prop.errcon ? (
                 <>
@@ -20,7 +20,7 @@ const LoaderExampleLoader = (prop) => (
                 <Loader size="huge" />
             )}
         </Dimmer>
-    </Segment>
+    </div>
 );
 
 export default LoaderExampleLoader;

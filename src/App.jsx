@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+
+import { Howl } from "howler";
+import { Popup } from "semantic-ui-react";
 import $ from "jquery";
 import Info from "./components/Info";
 import Wheel from "./components/Wheel";
-import Loader from "./components/Loader";
-import { Howl } from "howler";
-import { Popup } from "semantic-ui-react";
+import Loaderr from "./components/Loader";
 const segments = [0, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 25, 2, 4, 2, 8, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 20];
 
 let _auth = null;
@@ -214,10 +215,10 @@ const BlackjackGame = () => {
     };
     const getTotalBets = (seat) => {
         var userbet = gameData.players.filter((bet) => bet.seat == seat);
-var Total = 0
-userbet.map(function (bet, i) {
-    Total = Total + bet.amount
-})
+        var Total = 0;
+        userbet.map(function (bet, i) {
+            Total = Total + bet.amount;
+        });
         return doCurrencyMil(Total);
     };
     const getBets = (seat, username) => {
@@ -266,16 +267,13 @@ userbet.map(function (bet, i) {
                 // Update kardan state
             }
             if (data.method == "timer") {
+                setGameTimer(data.sec);
                 if (data.sec == 5) {
                     timerRunningOut.play();
                 }
-                setGameTimer(data.sec); // Update kardan state
+                // Update kardan state
             }
-            if (data.method == "online") {
-                setOnline(data.total);
 
-                dealingSound.play();
-            }
             if (data.method == "lasts") {
                 setLasts(data.total);
             }
@@ -284,7 +282,7 @@ userbet.map(function (bet, i) {
         // Event onclose baraye vaghti ke websocket baste mishe
         socket.onclose = () => {
             console.log("WebSocket closed");
-             setConn(false);
+            setConn(false);
             _auth = null;
         };
 
@@ -295,17 +293,9 @@ userbet.map(function (bet, i) {
     }, []);
 
     useEffect(() => {
+        
         setTimeout(() => {
-            $(".empty-slot i").hover(
-                function () {
-                    // console.log('hi');
-
-                    actionClick.play();
-                },
-                function () {
-                    // play nothing when mouse leaves chip
-                }
-            );
+         
             $(".betButtons").hover(
                 function () {
                     // console.log('hi');
@@ -317,65 +307,35 @@ userbet.map(function (bet, i) {
                 }
             );
         }, 10);
-
-        if (gamesData.length && gameId != 0) {
-            var _data = gamesData.filter((game) => game?.id === gameId)[0];
+        if (gamesData.length) {
+            const _data = gamesData.filter((game) => game?.id === gameId)[0];
             //console.log(_data);
-
-            setGameData(_data);
-            if (_data.dealer?.cards.length > 1) {
-                setGameTimer(-1);
+            if (_data.players.length == 0) {
+                setGameTimer(15);
             }
+            setGameData(_data);
         }
         AppOrtion();
-    }, [gamesData, gameId]);
+    }, [gamesData]);
     // Agar gaData nist, ye matn "Loading" neshan bede
-    if (_auth == null || !conn) {
-        return <Loader errcon={true} />;
-    }
-    if (!gamesData || !userData) {
-        return <Loader />;
-    }
+    
+   
+   
 
-    if (gameId == 0 || !gameData) {
-        return (
-            <div>
-                <ul className="tilesWrap" id="scale">
-                    {gamesData.map(function (game, i) {
-                        var _players = game.players.filter((player) => player.nickname).length;
-                        //console.log(_players);
-
-                        return (
-                            <li onClick={() => setGameId(game.id)} key={i}>
-                                <h2>
-                                    {_players}/{game.seats}
-                                </h2>
-                                <h3>{game.id}</h3>
-                                <p>
-                                    Min Bet: {doCurrencyMil(game.min * 1000)}
-                                    <br />
-                                    Max Bet: {doCurrencyMil(game.min * 10000)}
-                                </p>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </div>
-        );
+    if (_auth == null || !conn || !gamesData ||!gameData|| !userData || lasts.length == 0) {
+        return <Loaderr errcon={!gamesData || !userData || lasts.length == 0?false:true} />;
     }
-    {
-        gameData.players.map(function (player, pNumber) {
-            if (player.nickname == userData.nickname) {
-                _countBet = _countBet + 1;
-                _totalBet = _totalBet + player.amount;
-                _totalWin = _totalWin + player.win;
-            }
-        });
-    }
+    gameData.players.map(function (player, pNumber) {
+        if (player.nickname == userData.nickname) {
+            _countBet = _countBet + 1;
+            _totalBet = _totalBet + player.amount;
+            _totalWin = _totalWin + player.win;
+        }
+    });
     return (
         <div>
             <div className="game-room" id="scale">
-                <Info setGameId={setGameId} online={online} />
+                <Info online={online} />
                 <div id="balance-bet-box">
                     <div className="balance-bet">
                         Balance
@@ -393,7 +353,7 @@ userbet.map(function (bet, i) {
                 <div id="volume-button">
                     <i className="fas fa-volume-up"></i>
                 </div>
-                {gameTimer >= 0 && !gameData.gameOn && (
+                {gameTimer >= 0 && !gameData.gameOn && gameData.gameStart && (
                     <div id="deal-start-label" className="hide-element">
                         <p>
                             Waiting for bets <span>{gameTimer}</span>
@@ -402,7 +362,7 @@ userbet.map(function (bet, i) {
                 )}
 
                 <div id="dealer">
-                    {lasts && (
+                    {lasts.length>0 && (
                         <div className="dealer-cards">
                             {lasts.map(function (x, i) {
                                 if (i < 50) {
@@ -416,9 +376,8 @@ userbet.map(function (bet, i) {
                             })}
                         </div>
                     )}
-                    
                 </div>
-                <Wheel number={gameData.number} status={gameData.status} last={lasts[0]} time={gameData.startTimer} />
+                <Wheel number={gameData.number} status={gameData.status} last={lasts[0] == gameData.number && gameData.status == "Spin" ? lasts[1] : lasts[0]} time={gameData.startTimer} />
                 <div id="players-container">
                     {betAreas.map(function (player, pNumber) {
                         var _resClass = "";
@@ -435,16 +394,16 @@ userbet.map(function (bet, i) {
                             pBet.bet = pBet.amount;
                         }
                         return (
-                            <span className={gameData.status=="Done" && gameData.gameOn && player.x == segments[gameData.number] ? "players result-win": gameData.status=="Done" && gameData.gameOn ? "players result-lose":"players"} key={pNumber}>
+                            <span className={gameData.status == "Done" && gameData.gameOn && player.x == segments[gameData.number] ? "players result-win" : gameData.status == "Done" && gameData.gameOn ? "players result-lose" : "players"} key={pNumber}>
                                 <div className={gameData.gameOn || gameData.min * 1000 > userData.balance || pBet ? "active empty-slot noclick-nohide" : "empty-slot noclick-nohide"} style={{ background: getcolor(player.x), color: getcolortext(player.x) }}>
                                     x{player.x}
                                 </div>
-                                {!gameData.gameOn && checkBets(pNumber, userData.nickname) && (
+                                {!gameData.gameOn && gameTimer > 1 && checkBets(pNumber, userData.nickname) && (
                                     <div id="bets-container">
                                         {_renge.map(function (bet, i) {
                                             if (bet * 1000 <= userData.balance) {
                                                 return (
-                                                    <span key={i}  className={gameTimer<=3 && gameTimer>=0 && gameData.gameStart?"animate__flipOutX animate__animated":""}>
+                                                    <span key={i} className={gameTimer <= 3 && gameTimer >= -1 && gameData.gameStart ? "animate__flipOutX animate__animated" : ""}>
                                                         <button
                                                             className="betButtons update-balance-bet animate__animated animate__zoomInUp"
                                                             style={{ animationDelay: i * 100 + "ms" }}
@@ -461,7 +420,7 @@ userbet.map(function (bet, i) {
                                                 );
                                             } else {
                                                 return (
-                                                    <span key={i}  className={gameTimer<=3&& gameTimer>=0&& gameData.gameStart?"animate__flipOutX animate__animated":""}>
+                                                    <span key={i} className={gameTimer <= 3 && gameTimer >= -1 && gameData.gameStart ? "animate__flipOutX animate__animated" : ""}>
                                                         <button className="betButtons update-balance-bet noclick noclick-nohide animate__animated animate__zoomInUp" style={{ animationDelay: i * 100 + "ms" }} id={"chip" + i} value={bet * 1000}>
                                                             {doCurrencyMil(bet * 1000)}
                                                         </button>
@@ -479,10 +438,9 @@ userbet.map(function (bet, i) {
                                         </button>
                                     </div>
                                 )}
-                               
+
                                 {allBet.length > 0 && (
                                     <div className={"player-coin all"}>
-                                        
                                         {allBet.map(function (player, pNumber) {
                                             return (
                                                 <Popup
@@ -505,17 +463,23 @@ userbet.map(function (bet, i) {
                                                 />
                                             );
                                         })}
-                                        
                                     </div>
                                 )}
 
                                 <div className="percent">
-{gameData.gameOn ? <><b>{getTotalBets(pNumber)}</b>
-                                    <br />
-                                    total bets</>:<>
-                                    <b>{getPercent(player)}%</b>
-                                    <br />
-                                    in last {lasts.length}</>}
+                                    {gameData.gameOn ? (
+                                        <>
+                                            <b>{getTotalBets(pNumber)}</b>
+                                            <br />
+                                            total bets
+                                        </>
+                                    ) : (
+                                        <>
+                                            <b>{getPercent(player)}%</b>
+                                            <br />
+                                            in last {lasts.length}
+                                        </>
+                                    )}
                                 </div>
                             </span>
                         );
