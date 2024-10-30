@@ -323,7 +323,7 @@ const BlackjackGame = () => {
    
 
     if (_auth == null || !conn || !gamesData ||!gameData|| !userData || lasts.length == 0) {
-        return <Loaderr errcon={!gamesData || !userData || lasts.length == 0?false:true} />;
+        return <Loaderr errcon={!gamesData||!gameData || !userData || lasts.length == 0?false:true} />;
     }
     gameData.players.map(function (player, pNumber) {
         if (player.nickname == userData.nickname) {
