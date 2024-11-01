@@ -377,7 +377,7 @@ const BlackjackGame = () => {
                         </div>
                     )}
                 </div>
-                <Wheel number={gameData.number} status={gameData.status} last={lasts[0] == gameData.number && gameData.status == "Done" ? lasts[1] : lasts[0]} time={gameData.startTimer} />
+                <Wheel number={gameData.number} status={gameData.status} last={lasts[0]} time={gameData.startTimer} />
                 <div id="players-container">
                     {betAreas.map(function (player, pNumber) {
                         var _resClass = "";
