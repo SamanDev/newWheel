@@ -377,7 +377,7 @@ const BlackjackGame = () => {
                         </div>
                     )}
                 </div>
-                <Wheel number={gameData.number} status={gameData.status} last={lasts[0] == gameData.number && gameData.status == "Spin" ? lasts[1] : lasts[0]} time={gameData.startTimer} />
+                <Wheel number={gameData.number} status={gameData.status} last={lasts[0] == gameData.number && gameData.status == "Done" ? lasts[1] : lasts[0]} time={gameData.startTimer} />
                 <div id="players-container">
                     {betAreas.map(function (player, pNumber) {
                         var _resClass = "";
@@ -403,7 +403,7 @@ const BlackjackGame = () => {
                                         {_renge.map(function (bet, i) {
                                             if (bet * 1000 <= userData.balance) {
                                                 return (
-                                                    <span key={i} className={gameTimer <= 3 && gameTimer >= -1 && gameData.gameStart ? "animate__flipOutX animate__animated" : ""}>
+                                                    <span key={i} className={gameTimer <= 2 && gameTimer >= -1 && gameData.gameStart ? "animate__flipOutX animate__animated" : ""}>
                                                         <button
                                                             className="betButtons update-balance-bet animate__animated animate__zoomInUp"
                                                             style={{ animationDelay: i * 100 + "ms" }}
