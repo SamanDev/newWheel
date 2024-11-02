@@ -77,7 +77,7 @@ function checkbox() {
 }
 setInterval(() => {
     checkbox();
-}, 800);
+}, 500);
 const haveSideBet = (sideBets, nickname, seat, mode) => {
     var _have = false;
     sideBets
@@ -151,7 +151,7 @@ window.addEventListener(
 window.parent.postMessage("userget", "*");
 
 if (window.self == window.top) {
-    //window.location.href = "https://www.google.com/";
+    window.location.href = "https://www.google.com/";
 }
 let dealingSound = new Howl({
     src: ["/sounds/dealing_card_fix3.mp3"],
@@ -318,11 +318,12 @@ const BlackjackGame = () => {
         }
         //AppOrtion();
     }, [gamesData]);
+    
     useEffect(() => {
         setTimeout(() => {
          
             AppOrtion();
-        }, 1000);
+        }, 500);
         
     }, []);
     // Agar gaData nist, ye matn "Loading" neshan bede
@@ -411,7 +412,7 @@ const BlackjackGame = () => {
                                         {_renge.map(function (bet, i) {
                                             if (bet * 1000 <= userData.balance) {
                                                 return (
-                                                    <span key={i} className={gameTimer < 2 && gameTimer >= -1 && gameData.gameStart ? "animate__fadeOutDown animate__animated" : ""}>
+                                                    <span key={i} className={gameTimer < 2 && gameTimer >= -1 && gameData.gameStart ? "animate__zoomOut animate__animated" : ""}>
                                                         <button
                                                             className="betButtons update-balance-bet animate__animated animate__zoomInUp"
                                                             style={{ animationDelay: i * 100 + "ms" }}
@@ -428,7 +429,7 @@ const BlackjackGame = () => {
                                                 );
                                             } else {
                                                 return (
-                                                    <span key={i} className={gameTimer <= 3 && gameTimer >= -1 && gameData.gameStart ? "animate__flipOutX animate__animated" : ""}>
+                                                    <span key={i} className={gameTimer < 2 && gameTimer >= -1 && gameData.gameStart ? "animate__zoomOut animate__animated" : ""}>
                                                         <button className="betButtons update-balance-bet noclick noclick-nohide animate__animated animate__zoomInUp" style={{ animationDelay: i * 100 + "ms" }} id={"chip" + i} value={bet * 1000}>
                                                             {doCurrencyMil(bet * 1000)}
                                                         </button>

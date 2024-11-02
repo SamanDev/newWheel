@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
-
-const WheelContect = (prop) => {
-    const segments = [0, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 25, 2, 4, 2, 8, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 20];
+const segments = [0, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 25, 2, 4, 2, 8, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 20];
 var _l = [];
 const getcolor = (item) => {
     var def = "#000000";
@@ -44,6 +42,8 @@ segments.map((item, i) => {
         },
     });
 });
+const WheelContect = (prop) => {
+    
 const [mustSpin, setMustSpin] = useState(false);
 
 const [mustSpinFF, setMustSpinFF] = useState(false);
@@ -55,10 +55,10 @@ const [prizeNumber, setPrizeNumber] = useState(0);
         if (!mustSpin && prop.status == "Spin") {
            
                 const newPrizeNumber = prop.number;
-
+                setMustSpinFF(true);
                 setPrizeNumber(newPrizeNumber);
                 setMustSpin(true);
-                setMustSpinFF(true);
+                
             //const newPrizeNumber = Math.floor(Math.random() * _l.length);
         }
     }, [prop.status]);
@@ -99,6 +99,7 @@ const [prizeNumber, setPrizeNumber] = useState(0);
                     disableInitialAnimation={false}
                     mustStartSpinning={mustSpin}
                     prizeNumber={prizeNumber}
+                    pointerProps={{src:'none'}}
                     onStopSpinning={() => {
                         setMustSpin(false);
                     }}
