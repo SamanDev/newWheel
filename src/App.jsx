@@ -77,7 +77,7 @@ function checkbox() {
 }
 setInterval(() => {
     checkbox();
-}, 1900);
+}, 800);
 const haveSideBet = (sideBets, nickname, seat, mode) => {
     var _have = false;
     sideBets
@@ -151,7 +151,7 @@ window.addEventListener(
 window.parent.postMessage("userget", "*");
 
 if (window.self == window.top) {
-    window.location.href = "https://www.google.com/";
+    //window.location.href = "https://www.google.com/";
 }
 let dealingSound = new Howl({
     src: ["/sounds/dealing_card_fix3.mp3"],
@@ -294,29 +294,37 @@ const BlackjackGame = () => {
 
     useEffect(() => {
         
-        setTimeout(() => {
-         
-            $(".betButtons").hover(
-                function () {
-                    // console.log('hi');
-
-                    chipHover.play();
-                },
-                function () {
-                    // play nothing when mouse leaves chip
-                }
-            );
-        }, 10);
+       
         if (gamesData.length) {
             const _data = gamesData.filter((game) => game?.id === gameId)[0];
             //console.log(_data);
             if (_data.players.length == 0) {
                 setGameTimer(15);
+                setTimeout(() => {
+         
+                    $(".betButtons").hover(
+                        function () {
+                            // console.log('hi');
+        
+                            chipHover.play();
+                        },
+                        function () {
+                            // play nothing when mouse leaves chip
+                        }
+                    );
+                }, 10);
             }
             setGameData(_data);
         }
-        AppOrtion();
+        //AppOrtion();
     }, [gamesData]);
+    useEffect(() => {
+        setTimeout(() => {
+         
+            AppOrtion();
+        }, 1000);
+        
+    }, []);
     // Agar gaData nist, ye matn "Loading" neshan bede
     
    
@@ -353,9 +361,9 @@ const BlackjackGame = () => {
                 <div id="volume-button">
                     <i className="fas fa-volume-up"></i>
                 </div>
-                {gameTimer >= 0 && !gameData.gameOn && gameData.gameStart && (
-                    <div id="deal-start-label" className="hide-element">
-                        <p>
+                {gameTimer >= 1 && !gameData.gameOn && gameData.gameStart && (
+                    <div id="deal-start-label" >
+                        <p className="animate__bounceIn animate__animated animate__infinite" style={{animationDuration:'1s'}}>
                             Waiting for bets <span>{gameTimer}</span>
                         </p>
                     </div>
@@ -377,7 +385,7 @@ const BlackjackGame = () => {
                         </div>
                     )}
                 </div>
-                <Wheel number={gameData.number} status={gameData.status} last={lasts[0]} time={gameData.startTimer} />
+                <Wheel number={gameData.number} status={gameData.status} last={lasts[0]} gameTimer={gameTimer} time={gameData.startTimer} />
                 <div id="players-container">
                     {betAreas.map(function (player, pNumber) {
                         var _resClass = "";
@@ -394,16 +402,16 @@ const BlackjackGame = () => {
                             pBet.bet = pBet.amount;
                         }
                         return (
-                            <span className={gameData.status == "Done" && gameData.gameOn && player.x == segments[gameData.number] ? "players result-win" : gameData.status == "Done" && gameData.gameOn ? "players result-lose" : "players"} key={pNumber}>
+                            <span className={gameData.status == "Done" && gameData.gameOn && player.x == segments[gameData.number] ? "players result-win" : gameData.status == "Done" && gameData.gameOn ? "players result-lose" : "players"} key={pNumber} style={getTotalBets(pNumber)=="0K" && gameData.gameOn?{opacity:.1}:{}}>
                                 <div className={gameData.gameOn || gameData.min * 1000 > userData.balance || pBet ? "active empty-slot noclick-nohide" : "empty-slot noclick-nohide"} style={{ background: getcolor(player.x), color: getcolortext(player.x) }}>
                                     x{player.x}
                                 </div>
-                                {!gameData.gameOn && gameTimer > 1 && checkBets(pNumber, userData.nickname) && (
+                                {!gameData.gameOn && gameTimer >= 0 && checkBets(pNumber, userData.nickname) && (
                                     <div id="bets-container">
                                         {_renge.map(function (bet, i) {
                                             if (bet * 1000 <= userData.balance) {
                                                 return (
-                                                    <span key={i} className={gameTimer <= 2 && gameTimer >= -1 && gameData.gameStart ? "animate__flipOutX animate__animated" : ""}>
+                                                    <span key={i} className={gameTimer < 2 && gameTimer >= -1 && gameData.gameStart ? "animate__fadeOutDown animate__animated" : ""}>
                                                         <button
                                                             className="betButtons update-balance-bet animate__animated animate__zoomInUp"
                                                             style={{ animationDelay: i * 100 + "ms" }}
@@ -453,12 +461,12 @@ const BlackjackGame = () => {
                                                         </button>
                                                     }
                                                     content={
-                                                        <>
+                                                        <div style={{minWidth:120}}>
                                                             <img src={"/imgs/avatars/" + player?.avatar + ".webp"} style={{ height: 30, marginRight: 10, float: "left" }} />
                                                             {player.nickname}
                                                             <br />
                                                             <small>{doCurrencyMil(player.amount)}</small>
-                                                        </>
+                                                        </div>
                                                     }
                                                 />
                                             );
@@ -471,13 +479,13 @@ const BlackjackGame = () => {
                                         <>
                                             <b>{getTotalBets(pNumber)}</b>
                                             <br />
-                                            total bets
+                                            Total Bets
                                         </>
                                     ) : (
                                         <>
                                             <b>{getPercent(player)}%</b>
                                             <br />
-                                            in last {lasts.length}
+                                            in Last {lasts.length}
                                         </>
                                     )}
                                 </div>

@@ -44,8 +44,10 @@ segments.map((item, i) => {
         },
     });
 });
-    const [mustSpin, setMustSpin] = useState(false);
-    const [prizeNumber, setPrizeNumber] = useState(0);
+const [mustSpin, setMustSpin] = useState(false);
+
+const [mustSpinFF, setMustSpinFF] = useState(false);
+const [prizeNumber, setPrizeNumber] = useState(0);
     const [timer, setTimer] = useState(prop.time);
    
     
@@ -56,7 +58,7 @@ segments.map((item, i) => {
 
                 setPrizeNumber(newPrizeNumber);
                 setMustSpin(true);
-          
+                setMustSpinFF(true);
             //const newPrizeNumber = Math.floor(Math.random() * _l.length);
         }
     }, [prop.status]);
@@ -65,7 +67,7 @@ segments.map((item, i) => {
     }, [prop.time]);
 
     return (
-        <div className={"lastwheel "+prop.status}>
+        <div className={prop.status=="Spin"||prop.gameTimer<3?"lastwheel Spin":"lastwheel "+prop.status}>
 
             <div className="shadow"></div>
                 <div className="countover">
@@ -92,8 +94,8 @@ segments.map((item, i) => {
                     radiusLineWidth={0}
                     textDistance={80}
                     fontSize={20}
-                    spinDuration={parseFloat(1*timer/15)}
-                    startingOptionIndex={prop.last}
+                    spinDuration={parseFloat(1*timer/15).toFixed(2)}
+                    startingOptionIndex={!mustSpinFF?prop.last:-1}
                     disableInitialAnimation={false}
                     mustStartSpinning={mustSpin}
                     prizeNumber={prizeNumber}
