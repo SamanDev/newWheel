@@ -403,7 +403,7 @@ const BlackjackGame = () => {
                             pBet.bet = pBet.amount;
                         }
                         return (
-                            <span className={gameData.status == "Done" && gameData.gameOn && player.x == segments[gameData.number] ? "players result-win" : gameData.status == "Done" && gameData.gameOn ? "players result-lose" : "players"} key={pNumber} style={getTotalBets(pNumber)=="0K" && gameData.gameOn?{opacity:.1}:{}}>
+                            <span  id={"slot"+pNumber} className={gameData.status == "Done" && gameData.gameOn && player.x == segments[gameData.number] ? "players result-win" : gameData.status == "Done" && gameData.gameOn ? "players result-lose" : "players"} key={pNumber} style={getTotalBets(pNumber)=="0K" && gameData.gameOn?{opacity:.1}:{}}>
                                 <div className={gameData.gameOn || gameData.min * 1000 > userData.balance || pBet ? "active empty-slot noclick-nohide" : "empty-slot noclick-nohide"} style={{ background: getcolor(player.x), color: getcolortext(player.x) }}>
                                     x{player.x}
                                 </div>
@@ -420,6 +420,7 @@ const BlackjackGame = () => {
                                                             value={bet * 1000}
                                                             onClick={() => {
                                                                 chipPlace.play();
+                                                                $('#slot'+pNumber+' .betButtons').addClass('noclick-nohide');
                                                                 socket.send(JSON.stringify({ method: "bet", amount: bet * 1000, theClient: userData, gameId: gameData.id, seat: pNumber }));
                                                             }}
                                                         >
