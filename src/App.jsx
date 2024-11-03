@@ -260,9 +260,9 @@ const BlackjackGame = () => {
                 if (data.theClient?.balance >= 0) {
                     setUserData(data.theClient);
                 } else {
-                    //setUserData(data.theClient);
-                     setConn(false);
-                    _auth = null;
+                    setUserData(data.theClient);
+                    // setConn(false);
+                    //_auth = null;
                 }
                 // Update kardan state
             }
