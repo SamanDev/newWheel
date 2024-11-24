@@ -89,36 +89,48 @@ const haveSideBet = (sideBets, nickname, seat, mode) => {
 };
 const AppOrtion = () => {
     var gWidth = $("#root").width() / 1400;
-
-    var scale = gWidth;
+    var gHight = $("#root").height() / 850;
+    var scale = gWidth<gHight?gWidth:gHight;
     var highProtect = $("#root").height() * scale;
+    //console.log($("#root").width(),$("#root").height());
+   // console.log(gWidth,gHight,scale);
+   
+    
 
     if (highProtect > 850) {
-        var gHight = $("#root").height() / 850;
+        //console.log(gWidth,gHight,highProtect);
+        //gHight = $("#root").height() / 850;
         // scale = (scale + gHight)/2;
         scale = gHight;
-        if (scale <= 1) {
+        highProtect = $("#root").height() * scale;
+        var _t = ($("#root").height() - highProtect)/2;
+        if(_t<0){_t=_t*-1}
+        
+        if (scale < 1) {
             setTimeout(() => {
                 $("#scale").css("transform", "scale(" + scale + ")");
             }, 10);
         } else {
             scale = 1;
             setTimeout(() => {
-                $("#scale").css("transform", "scale(" + scale + ")");
+                $("#scale").css("transform", "scale(" + scale + ") translateY("+_t+"px)");
             }, 10);
         }
     } else {
-        var gHight = $("#root").height() / 850;
+       // gHight = $("#root").height() / 850;
         // scale = (scale + gHight)/2;
-        scale = gHight;
-        if (scale <= 1) {
+      //  scale = gHight;
+      var _t = ($("#root").height() - highProtect)/2;
+   if(_t<0){_t=_t*-1}
+        if (scale < 1) {
+            
             setTimeout(() => {
-                $("#scale").css("transform", "scale(" + scale + ")");
+                $("#scale").css("transform", "scale(" + scale + ") translateY("+_t+"px)");
             }, 10);
         } else {
             scale = 1;
             setTimeout(() => {
-                $("#scale").css("transform", "scale(" + scale + ")");
+                $("#scale").css("transform", "scale(" + scale + ") translateY("+_t+"px)");
             }, 10);
         }
     }
