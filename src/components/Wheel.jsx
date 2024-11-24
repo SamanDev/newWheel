@@ -99,7 +99,7 @@ const [prizeNumber, setPrizeNumber] = useState(0);
                     disableInitialAnimation={false}
                     mustStartSpinning={mustSpin}
                     prizeNumber={prizeNumber}
-                    pointerProps={{src:'none'}}
+                    pointerProps={{src:'/imgs/avatars/baby.svg'}}
                     onStopSpinning={() => {
                         setMustSpin(false);
                     }}

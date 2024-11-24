@@ -78,16 +78,49 @@ function checkbox() {
 setInterval(() => {
     checkbox();
 }, 500);
-const haveSideBet = (sideBets, nickname, seat, mode) => {
-    var _have = false;
-    sideBets
-        .filter((sideBet) => sideBet?.seat == seat && sideBet?.mode == mode && sideBet?.nickname == nickname)
-        .map(function (bet) {
-            _have = bet.amount;
-        });
-    return _have;
-};
-const AppOrtion = () => {
+function animateNum(){
+    $('.counter').each(function() {
+        var $this = $(this),
+            countTo = $this.attr('data-count'),
+            countFrom= $this.attr('start-num')?$this.attr('start-num'):parseInt($this.text().replace(/,/g,""));
+            
+            if(countTo!=countFrom && !$this.hasClass('doing')) {
+                $this.attr('start-num',countFrom);
+            // $this.addClass("doing");
+
+        $({ countNum: countFrom}).animate({
+          countNum: countTo
+        },
+      
+        {
+      
+          duration: 400,
+          easing:'linear',
+          
+           step: function() {
+             //$this.attr('start-num',Math.floor(this.countNum));
+             $this.text(doCurrency(Math.floor(this.countNum)));
+           },
+          complete: function() {
+            $this.text(doCurrency(this.countNum));
+            $this.attr('start-num',Math.floor(this.countNum));
+            //$this.removeClass("doing");
+            //alert('finished');
+          }
+      
+        });  
+        
+        
+    }else{
+        if($this.hasClass('doing')) {
+            $this.attr('start-num',countFrom);
+        $this.removeClass("doing");
+        }else{
+            $this.attr('start-num',countFrom);
+        }
+    }
+      });
+}const AppOrtion = () => {
     var gWidth = $("#root").width() / 1400;
     var gHight = $("#root").height() / 850;
     var scale = gWidth<gHight?gWidth:gHight;
@@ -328,7 +361,10 @@ const BlackjackGame = () => {
             }
             setGameData(_data);
         }
-        //AppOrtion();
+        setTimeout(() => {
+            animateNum()
+        }, 100);
+        AppOrtion();
     }, [gamesData]);
     
     useEffect(() => {
@@ -358,18 +394,18 @@ const BlackjackGame = () => {
             <div className="game-room" id="scale">
                 <Info online={online} />
                 <div id="balance-bet-box">
-                    <div className="balance-bet">
-                        Balance
-                        <div id="balance">{doCurrency(userData.balance)}</div>
-                    </div>
-                    <div className="balance-bet">
-                        Total Bet
-                        <div id="total-bet">{doCurrency(_totalBet)}</div>
-                    </div>
-                    <div className="balance-bet">
-                        Total Win
-                        <div id="total-bet">{doCurrency(_totalWin)}</div>
-                    </div>
+                <div className="balance-bet">
+                            Balance
+                            <div id="balance" className="counter" data-count={userData.balance}></div>
+                        </div>
+                        <div className="balance-bet">
+                            Yout Bets
+                            <div id="total-bet" className="counter" data-count={_totalBet}></div>
+                        </div>
+                        <div className="balance-bet">
+                            Your Wins
+                            <div id="total-bet" className="counter" data-count={_totalWin}></div>
+                        </div>
                 </div>
                 <div id="volume-button">
                     <i className="fas fa-volume-up"></i>
@@ -426,13 +462,14 @@ const BlackjackGame = () => {
                                                 return (
                                                     <span key={i} className={gameTimer < 2 && gameTimer >= -1 && gameData.gameStart ? "animate__zoomOut animate__animated" : ""}>
                                                         <button
-                                                            className="betButtons update-balance-bet animate__animated animate__zoomInUp"
-                                                            style={{ animationDelay: i * 100 + "ms" }}
+                                                            className="betButtons  animate__faster animate__animated animate__zoomInUp"
+                                                            style={{ animationDelay: i * 50 + "ms" }}
                                                             id={"chip" + i}
                                                             value={bet * 1000}
                                                             onClick={() => {
                                                                 chipPlace.play();
-                                                                $('#slot'+pNumber+' .betButtons').addClass('noclick-nohide');
+                                                                $("#slot" + pNumber + " #bets-container .betButtons").removeClass('animate__zoomInUp').addClass("noclick-nohide animate__zoomOut");
+                                                               
                                                                 socket.send(JSON.stringify({ method: "bet", amount: bet * 1000, theClient: userData, gameId: gameData.id, seat: pNumber }));
                                                             }}
                                                         >
@@ -443,7 +480,7 @@ const BlackjackGame = () => {
                                             } else {
                                                 return (
                                                     <span key={i} className={gameTimer < 2 && gameTimer >= -1 && gameData.gameStart ? "animate__zoomOut animate__animated" : ""}>
-                                                        <button className="betButtons update-balance-bet noclick noclick-nohide animate__animated animate__zoomInUp" style={{ animationDelay: i * 100 + "ms" }} id={"chip" + i} value={bet * 1000}>
+                                                        <button className="betButtons noclick noclick-nohide animate__animated animate__zoomInUp" style={{ animationDelay: i * 100 + "ms" }} id={"chip" + i} value={bet * 1000}>
                                                             {doCurrencyMil(bet * 1000)}
                                                         </button>
                                                     </span>
@@ -455,7 +492,7 @@ const BlackjackGame = () => {
 
                                 {pBet && (
                                     <div className={"player-coin"}>
-                                        <button className="betButtons update-balance-bet noclick animate__animated animate__rotateIn" id={"chip" + _renge.findIndex((bet) => bet == pBet.bet / 1000)}>
+                                        <button className="betButtons noclick animate__animated animate__rotateIn" id={"chip" + _renge.findIndex((bet) => bet == pBet.bet / 1000)}>
                                             {doCurrencyMil(pBet.bet)}
                                         </button>
                                     </div>
@@ -469,8 +506,9 @@ const BlackjackGame = () => {
                                                     key={pNumber}
                                                     size="mini"
                                                     inverted
+                                                    on='hover'
                                                     trigger={
-                                                        <button className="betButtons  animate__animated animate__zoomInDown" style={{ animationDelay: (pNumber + 1) * 50 + "ms", left: pNumber * 5, top: pNumber * 45 }} id={"chip" + _renge.findIndex((bet) => bet == player.amount / 1000)}>
+                                                        <button className="betButtons animate__animated animate__zoomInDown" style={{ animationDelay: (pNumber + 1) * 50 + "ms", left: pNumber * 5, top: pNumber * 45 }} id={"chip" + _renge.findIndex((bet) => bet == player.amount / 1000)}>
                                                             {doCurrencyMil(player.amount)}
                                                         </button>
                                                     }
