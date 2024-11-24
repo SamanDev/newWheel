@@ -463,12 +463,12 @@ const BlackjackGame = () => {
                                                     <span key={i} className={gameTimer < 2 && gameTimer >= -1 && gameData.gameStart ? "animate__zoomOut animate__animated" : ""}>
                                                         <button
                                                             className="betButtons  animate__faster animate__animated animate__zoomInUp"
-                                                            style={{ animationDelay: i * 50 + "ms" }}
+                                                            style={{ animationDelay: i * 100 + "ms" }}
                                                             id={"chip" + i}
                                                             value={bet * 1000}
                                                             onClick={() => {
                                                                 chipPlace.play();
-                                                                $("#slot" + pNumber + " #bets-container .betButtons").removeClass('animate__zoomInUp').addClass("noclick-nohide animate__zoomOut");
+                                                                $("#slot" + pNumber + " #bets-container .betButtons").removeAttr('style').removeClass('animate__zoomInUp').addClass("noclick-nohide animate__zoomOut");
                                                                
                                                                 socket.send(JSON.stringify({ method: "bet", amount: bet * 1000, theClient: userData, gameId: gameData.id, seat: pNumber }));
                                                             }}
