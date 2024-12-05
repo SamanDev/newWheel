@@ -122,15 +122,15 @@ function animateNum(){
       });
 }const AppOrtion = () => {
     var gWidth = $("#root").width() / 1400;
-    var gHight = $("#root").height() / 850;
+    var gHight = $("#root").height() / 750;
     var scale = gWidth<gHight?gWidth:gHight;
-    var highProtect = $("#root").height() * scale;
+    var highProtect = $("#root > div").height() * scale;
     //console.log($("#root").width(),$("#root").height());
    // console.log(gWidth,gHight,scale);
    
     
 
-    if (highProtect > 850) {
+    if (highProtect > 750) {
         //console.log(gWidth,gHight,highProtect);
         //gHight = $("#root").height() / 850;
         // scale = (scale + gHight)/2;
