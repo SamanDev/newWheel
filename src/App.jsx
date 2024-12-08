@@ -425,7 +425,7 @@ const BlackjackGame = () => {
                                 if (i < 50) {
                                     var card = segments[x];
                                     return (
-                                        <div className="visibleCards animate__flipInY animate__animated" key={i} style={{ animationDelay: (i + 1) * 90 + "ms", background: getcolor(card), color: getcolortext(card) }}>
+                                        <div className="visibleCards animate__fadeIn animate__animated" key={i} style={{ animationDelay: (i + 1) * 90 + "ms", background: getcolor(card), color: getcolortext(card) }}>
                                             x{card}
                                         </div>
                                     );
