@@ -15,7 +15,7 @@ html {
 }
 
 body {
-  background: #2d1135 !important;
+  background: radial-gradient(#385283, #421e1e) !important;
   
   padding: 0;
   margin: 0;
@@ -449,7 +449,7 @@ body {
   height: 100%;
   transition: all .1s ease;
   min-height: 750px !important;
-  transform-origin: top;
+  transform-origin: center;
 }
 
 #users-online-box {
@@ -796,14 +796,14 @@ body {
     overflow: hidden;
 }
 
-#root > div{
+#root > div {
   height: 750px;
   position: relative;
   width: 1400px;
-  top: 10px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  transform-origin: top center;
+  transform: translateX(-50%) translateY(-48%);
+  transform-origin: center;
 }
 
 .players-timer {
@@ -1203,6 +1203,12 @@ right: 90px;
   color:#fff;
   font-size: 14px;
 }
+.lastwheel > div{
+ 
+  width: 450px;
+  margin: auto;
+  
+  }
 .lastwheel{
   position: relative;
     z-index: -1;
@@ -1213,33 +1219,37 @@ right: 90px;
     left: 0;
     right: 0;
     top: -50px;
-    transition: all 9s ease;
+    transition: all 4s ease;
 
 }
 .lastwheel.Spin{
   
-    transform: scale(1.8);
+    transform: scale(1.6);
     
 
 }
-.lastwheel > div.shadow {
+#wheel {
+  display: block;
+  width: 450px;
+}
+.lastwheel  div.shadow {
  
   position: fixed;
-  left: 0;
-  right: 0;
+  left: -100%;
+  right: -100%;
   top: 0px;
   bottom: 0px;
-  background-image: linear-gradient(180deg, transparent 30%, #2d1135 50%);
+  background-image: linear-gradient(180deg, transparent 15%, #2d1135 50%);
   transition: all 2s ease;
   z-index: 100;
   opacity: 1;
-  height: 135%;
+  height: 185%;
   
 }
-.lastwheel.Spin > div.shadow {
+.lastwheel.Spin  div.shadow {
  
   
-  height: 185%;
+  top: 0;
   
 }
 
@@ -1353,8 +1363,7 @@ right: 90px;
 .countover {
   position: relative;
   margin: auto;
-  width: 80vw;
-  max-width: 445px;
+  max-width: 450px;
 
   z-index: 10;
   padding: 0;
@@ -1791,4 +1800,30 @@ margin: 35%;
 @keyframes portrait {
   0% { transform: rotate(90deg) }
   100% { transform: rotate(0deg) }
+}
+
+
+#wheelOfFortune {
+  display: block;
+  position: absolute;
+  overflow: hidden;
+  transform: rotate(45deg);
+}
+#wheelOfFortune canvas{
+  transition:1s ease-in-out;
+  
+}
+#dospin{
+  transform-origin: 50% 50%;
+  transition-duration:10s ;
+  
+  transition-timing-function: cubic-bezier(.14,-0.13,.04,1);
+ 
+
+}
+.frz{
+  transition-duration:0s !important;
+}
+#dospin.dospin{
+  rotate: 10turn;
 }
