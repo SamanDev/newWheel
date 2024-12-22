@@ -323,15 +323,16 @@ const BlackjackGame = () => {
         }
         setTimeout(() => {
             animateNum()
+            AppOrtion();
         }, 100);
-        AppOrtion();
+        
     }, [gamesData]);
     
     useEffect(() => {
         setTimeout(() => {
          
             AppOrtion();
-        }, 500);
+        }, 1000);
         
     }, []);
     // Agar gaData nist, ye matn "Loading" neshan bede
