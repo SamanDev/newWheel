@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Howl } from "howler";
 import { Popup } from "semantic-ui-react";
 import $ from "jquery";
-import Info from "./components/Info";
+
 import Wheel from "./components/WheelNew";
 import Loaderr from "./components/Loader";
 const segments = [0, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 25, 2, 4, 2, 8, 2, 4, 2, 10, 2, 4, 2, 8, 2, 4, 2, 20];
@@ -13,13 +13,15 @@ const loc = new URL(window.location);
 const pathArr = loc.pathname.toString().split("/");
 
 if (pathArr.length == 3) {
-    _auth = pathArr[1];
+    _auth = pathArr[1] + "___" + pathArr[2];
 }
 //_auth = "farshad-HangOver2";
 //console.log(_auth);
 
 //const WEB_URL = process.env.REACT_APP_MODE === "production" ? `wss://${process.env.REACT_APP_DOMAIN_NAME}/` : `ws://${loc.hostname}:8080`;
-const WEB_URL = `wss://mwheel.wheelofpersia.com/`;
+//const WEB_URL = `wss://mwheel.wheelofpersia.com/`;
+//const WEB_URL = `ws://${loc.hostname}:8100/wheel`;
+const WEB_URL = `wss://server.wheelofpersia.com/wheel`;
 // (A) LOCK SCREEN ORIENTATION
 const betAreas = [{ x: 2 }, { x: 4 }, { x: 8 }, { x: 10 }, { x: 20 }, { x: 25 }];
 const getcolor = (item) => {
@@ -66,49 +68,7 @@ const doCurrencyMil = (value, fix) => {
     }
     return val;
 };
-function animateNum(){
-    $('.counter').each(function() {
-        var $this = $(this),
-            countTo = $this.attr('data-count'),
-            countFrom= $this.attr('start-num')?$this.attr('start-num'):parseInt($this.text().replace(/,/g,""));
-            
-            if(countTo!=countFrom && !$this.hasClass('doing')) {
-                $this.attr('start-num',countFrom);
-            // $this.addClass("doing");
 
-        $({ countNum: countFrom}).animate({
-          countNum: countTo
-        },
-      
-        {
-      
-          duration: 400,
-          easing:'linear',
-          
-           step: function() {
-             //$this.attr('start-num',Math.floor(this.countNum));
-             $this.text(doCurrency(Math.floor(this.countNum)));
-           },
-          complete: function() {
-            $this.text(doCurrency(this.countNum));
-            $this.attr('start-num',Math.floor(this.countNum));
-            //$this.removeClass("doing");
-            //alert('finished');
-          }
-      
-        });  
-        
-        
-    }else{
-        if($this.hasClass('doing')) {
-            $this.attr('start-num',countFrom);
-        $this.removeClass("doing");
-        }else{
-            $this.attr('start-num',countFrom);
-        }
-    }
-      });
-}
 const socket = new WebSocket(WEB_URL, _auth);
 window.addEventListener("message", function (event) {
     if (event?.data?.username) {
@@ -122,58 +82,15 @@ window.addEventListener("message", function (event) {
         } catch (error) {}
     }
 });
-const AppOrtion = () => {
-    if (!$("#scale").attr("style")) {
-        let maxWidth = 1400,
-            maxHeight = 750;
-        //console.log($("#root").width(),$("#root").height());
-        // console.log(gWidth,gHight,scale);
-        let scale,
-            width = $("#root").width(),
-            height = $("#root").height(),
-            isMax = width >= maxWidth && height >= maxHeight;
 
-        scale = Math.min(width / maxWidth, height / maxHeight);
-        let highProtect = ($("#root").height() * height) / maxHeight;
 
-        let _t = 0;
-        if (_t < 0) {
-            //_t = _t * -1;
-        }
 
-        if (isMax) {
-            $("#scale").css("transform", "scale(1)");
-        } else {
-            $("#scale").css("transform", "scale(" + scale + ")");
-        }
-    }
-
-    // console.log(gWidth,highProtect,gHight,scale)
-};
-
-let supportsOrientationChange = "onorientationchange" in window,
-    orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
-var sizeBln;
-window.addEventListener(
-    orientationEvent,
-    function () {
-        clearTimeout(sizeBln);
-        sizeBln = setTimeout(() => {
-            $("#scale").removeAttr("style");
-            AppOrtion();
-        }, 500);
-    },
-    false
-);
 window.parent.postMessage("userget", "*");
 
-if (window.self == window.top) {
+if (window.self === window.top && WEB_URL.indexOf("localhost")==-1) {
     window.location.href = "https://www.google.com/";
 }
-let dealingSound = new Howl({
-    src: ["/sounds/dealing_card_fix3.mp3"],
-    volume: 0.5,
-});
+
 let chipHover = new Howl({
     src: ["/sounds/chip_hover_fix.mp3"],
     volume: 0.1,
@@ -185,15 +102,94 @@ let chipPlace = new Howl({
 let timerRunningOut = new Howl({
     src: ["/sounds/timer_running_out.mp3"],
     volume: 0.5,
+    rate: 0.4
 });
+function useScale(rootId = "root", scaleId = "scale", gamesData, conn) {
 
-// let youWin = new Howl({
-//   src: ['/sounds/you_win.mp3']
-// });
-// let youLose = new Howl({
-//   src: ['/sounds/you_lose.mp3']
-// });
-//$("body").css("background", "radial-gradient(#833838, #421e1e)");
+    useEffect(() => {
+
+        const doScale = () => {
+            try {
+                const root = document.getElementById(rootId);
+                const scaleEl = document.getElementById(scaleId);
+
+                if (!root || !scaleEl) return;
+                const gWidth = root.clientWidth / 1400;
+                const gHeight = root.clientHeight / 850;
+                let scale = Math.min(gWidth, gHeight);
+
+                if (scale > 1) scale = 1;
+                // center translation to keep proportions (approximate)
+
+
+
+                const target = 800 - gHeight;
+                let t = (800 - target) / 2;
+                scaleEl.style.transform = `scale(${scale}) translateY(${t}px)`;
+
+            } catch (e) {
+                // ignore
+            }
+        };
+        window.addEventListener("resize", doScale);
+        window.addEventListener("orientationchange", doScale);
+        // initial
+
+        setTimeout(doScale, 50);
+
+
+
+        return () => {
+            window.removeEventListener("resize", doScale);
+            window.removeEventListener("orientationchange", doScale);
+        };
+    }, [gamesData, conn]);
+
+}
+function animateNum() {
+    $('.counter').each(function () {
+        var $this = $(this),
+            countTo = $this.attr('data-count'),
+            countFrom = $this.attr('start-num') ? $this.attr('start-num') : parseInt($this.text().replace(/,/g, ""));
+
+        if (countTo != countFrom && !$this.hasClass('doing')) {
+            $this.attr('start-num', countFrom);
+            // $this.addClass("doing");
+
+            $({ countNum: countFrom }).animate({
+                countNum: countTo
+            },
+
+                {
+
+                    duration: 400,
+                    easing: 'linear',
+
+                    step: function () {
+                        //$this.attr('start-num',Math.floor(this.countNum));
+                        $this.text(doCurrency(Math.floor(this.countNum)));
+                    },
+                    complete: function () {
+                        $this.text(doCurrency(this.countNum));
+                        $this.attr('start-num', Math.floor(this.countNum));
+                        //$this.removeClass("doing");
+                        //alert('finished');
+                    }
+
+                });
+
+
+        } else {
+            if ($this.hasClass('doing')) {
+                $this.attr('start-num', countFrom);
+                $this.removeClass("doing");
+            } else {
+                $this.attr('start-num', countFrom);
+            }
+        }
+    });
+}
+
 const BlackjackGame = () => {
     var _countBet = 0;
 
@@ -209,6 +205,7 @@ const BlackjackGame = () => {
     const [gameId, setGameId] = useState("Wheel01");
     const [gameTimer, setGameTimer] = useState(-1);
     const [online, setOnline] = useState(0);
+     useScale("root", "scale", gamesData, conn);
     const checkBets = (seat, username) => {
         var check = true;
         var userbet = gameData.players.filter((bet) => bet.seat == seat && bet.nickname == username);
@@ -276,14 +273,20 @@ const BlackjackGame = () => {
                 // Update kardan state
             }
             if (data.method == "timer") {
-                setGameTimer(data.sec);
-                if (data.sec == 5) {
-                    timerRunningOut.play();
-                }
-                // Update kardan state
+                
+                if (data.sec === 10) {
+                timerRunningOut.fade(0, 0.5, 2000);
+                timerRunningOut.play();
+            }
+            if (data.sec == 3) {
+
+                timerRunningOut.fade(0.5, 0, 4000);
+            }
+            setGameTimer(data.sec);
             }
 
             if (data.method == "lasts") {
+                $('body').css('background',getcolor(segments[data.total[0]]))
                 setLasts(data.total);
             }
         };
@@ -327,25 +330,21 @@ const BlackjackGame = () => {
         }
         setTimeout(() => {
             animateNum()
-            AppOrtion();
+          
         }, 100);
         
     }, [gamesData]);
     
-    useEffect(() => {
-        setTimeout(() => {
-         
-            AppOrtion();
-        }, 1000);
-        
-    }, []);
+  
     // Agar gaData nist, ye matn "Loading" neshan bede
     
    
    
 
-    if (_auth == null || !conn || !gamesData ||!gameData|| !userData || lasts.length == 0) {
-        return <Loaderr errcon={!gamesData||!gameData || !userData || lasts.length == 0?false:true} />;
+    if (!conn || !gamesData ||!gameData|| !userData || lasts.length == 0) {
+        return  <div>
+            <div className={"game-room"} id="scale">
+                <Loaderr errcon={!gamesData||!gameData || !userData || lasts.length == 0?false:true} /></div></div>;
     }
     gameData.players.map(function (player, pNumber) {
         if (player.nickname == userData.nickname) {
@@ -356,8 +355,9 @@ const BlackjackGame = () => {
     });
     return (
         <div>
-            <div className="game-room" id="scale">
-                <Info online={online} />
+            <div className={"game-room"} id="scale">
+                <div className="fix">
+         
                 <div id="balance-bet-box">
                 <div className="balance-bet">
                             Balance
@@ -372,9 +372,7 @@ const BlackjackGame = () => {
                             <div id="total-bet" className="counter" data-count={_totalWin}></div>
                         </div>
                 </div>
-                <div id="volume-button">
-                    <i className="fas fa-volume-up"></i>
-                </div>
+         
                 {gameTimer >= 1 && !gameData.gameOn && gameData.gameStart && (
                     <div id="deal-start-label" >
                         <p className="animate__bounceIn animate__animated animate__infinite" style={{animationDuration:'1s'}}>
@@ -389,6 +387,7 @@ const BlackjackGame = () => {
                             {lasts.map(function (x, i) {
                                 if (i < 50) {
                                     var card = segments[x];
+                                    
                                     return (
                                         <div className="visibleCards animate__fadeIn animate__animated" key={i} style={{ animationDelay: (i + 1) * 90 + "ms", background: getcolor(card), color: getcolortext(card) }}>
                                             x{card}
@@ -432,6 +431,7 @@ const BlackjackGame = () => {
                                                             id={"chip" + i}
                                                             value={bet * 1000}
                                                             onClick={() => {
+                                                                {$('body').css('background',getcolor(player.x))}
                                                                 chipPlace.play();
                                                                 $("#slot" + pNumber + " #bets-container .betButtons").removeAttr('style').removeClass('animate__zoomInUp').addClass("noclick-nohide animate__zoomOut");
                                                                
@@ -511,7 +511,10 @@ const BlackjackGame = () => {
                     })}
                 </div>
             </div>
-        </div>
+                </div>
+            </div>
+     
+   
     );
 };
 
